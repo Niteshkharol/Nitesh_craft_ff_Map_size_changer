@@ -34,7 +34,7 @@ def modify_map(content, current_hex, new_hex):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
         return
-    await update.message.reply_text("Welcome to the Map Size Changer Bot! Send me a file to change the map size.")
+    await update.message.reply_text("Welcome to the Map Size Changer Bot! Send me a .meta or .bytes file to begin.")
 
 async def handle_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.type != "private":
@@ -75,10 +75,10 @@ async def handle_map_size(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if file_content and current_hex:
         modified_content = modify_map(file_content, current_hex, new_hex)
         await update.message.reply_document(document=io.BytesIO(modified_content), filename=file_name)
-        await update.message.reply_text(f"Map size successfully changed to {selected_size}.")
+        await update.message.reply_text(f"Map size changed to {selected_size}.")
         context.user_data.clear()
     else:
-        await update.message.reply_text("Invalid file data.")
+        await update.message.reply_text("No file data found.")
 
 application.add_handler(CommandHandler("start", start))
 application.add_handler(MessageHandler(filters.Document.ALL & filters.ChatType.PRIVATE, handle_file))
@@ -89,4 +89,4 @@ async def webhook_handler(request: Request):
     data = await request.json()
     update = Update.de_json(data, application.bot)
     await application.process_update(update)
-    return {"status": "ok"}
+    return {"ok": True}
