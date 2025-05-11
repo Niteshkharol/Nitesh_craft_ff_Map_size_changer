@@ -89,4 +89,4 @@ async def webhook_handler(request: Request):
     data = await request.json()
     update = Update.de_json(data, application.bot)
     await application.process_update(update)
-    return {"ok": True}
+    return {"status": "ok"}
